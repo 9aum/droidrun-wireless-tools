@@ -40,9 +40,18 @@ class DroidRunWirelessRecorder:
             resp = requests.get(f"{self.base_url}/phone_state", headers=self.headers, timeout=3)
             if resp.status_code == 200:
                 data = resp.json()
+                # Handle nested result string
+                if "result" in data and isinstance(data["result"], str):
+                    try: 
+                        inner = json.loads(data["result"])
+                        data.update(inner) # Merge inner dict
+                    except: pass
+
                 self.width = data.get("displayWidth", 1080)
                 self.height = data.get("displayHeight", 2400)
+                cur_app = data.get("currentApp", "Unknown")
                 print(f"✅ Device Resolution: {self.width}x{self.height}")
+                print(f"📱 Current App: {cur_app}")
         except: pass
 
     def check_connection(self):

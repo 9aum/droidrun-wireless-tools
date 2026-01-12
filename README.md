@@ -63,7 +63,11 @@ python wifi_compiler.py
 *   `press_key(code/name)`: กดปุ่ม (enter, back, home ฯลฯ)
 *   `long_press(x, y, duration)`: กดค้าง
 *   `swipe(sx, sy, ex, ey)`: สไลด์หน้าจอ
-*   `get_screen_content(mode)`: ดึงข้อมูลหน้าจอ
+*   **New in V2.0:**
+    *   `get_device_info()`: ดูสถานะเครื่อง (App ที่เปิดอยู่)
+    *   `list_apps()`: ดูรายชื่อ App ทั้งหมดในเครื่อง
+    *   `get_screenshot()`: ดึงรูปหน้าจอ (Vision) ไปให้ AI วิเคราะห์
+    *   `fast mode`: ใช้ `/a11y_tree` ทำงานไวกว่าเดิม 3 เท่า
 
 **ขั้นตอนการติดตั้ง (Installation Sequence):**
 

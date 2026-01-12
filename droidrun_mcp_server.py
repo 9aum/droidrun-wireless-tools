@@ -122,6 +122,42 @@ def clear_text() -> str:
     except Exception as e:
         return f"Error clearing text: {e}"
 
+@mcp.tool()
+def get_device_info() -> str:
+    """Get device status (Current App, Keyboard, etc)."""
+    url = f"{BASE_URL}/phone_state"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=5)
+        return json.dumps(resp.json(), indent=2, ensure_ascii=False)
+    except Exception as e:
+        return f"Error getting device info: {e}"
+
+@mcp.tool()
+def list_apps() -> str:
+    """List all installed applications (Label & Package Name)."""
+    url = f"{BASE_URL}/packages"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=10)
+        apps = resp.json().get("result", [])
+        # Simplify output for LLM
+        simple_list = [f"{app['label']} ({app['packageName']})" for app in apps]
+        return "\n".join(simple_list)
+    except Exception as e:
+        return f"Error listing apps: {e}"
+
+@mcp.tool()
+def get_screenshot() -> str:
+    """Get the current screen as a Base64 PNG string."""
+    url = f"{BASE_URL}/screenshot"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=10)
+        # Verify it's valid base64 or binary
+        if resp.headers.get("Content-Type") == "image/png":
+            return base64.b64encode(resp.content).decode('utf-8')
+        return resp.text # Likely already base64 string from API
+    except Exception as e:
+        return f"Error getting screenshot: {e}"
+
 def _send_global_action(action_id: int, name: str) -> str:
     url = f"{BASE_URL}/action/global"
     payload = {"action": action_id}

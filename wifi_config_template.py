@@ -1,6 +1,8 @@
-# --- DroidRun Wireless Configuration ---
-# Rename this file to 'wifi_config.py' and fill in your details.
+# --- CONFIGURATION (การตั้งค่า) ---
+# ดู IP และ Port ได้จากแอป DroidRun Portal บนมือถือ
+TARGET_IP = "192.168.1.xxx" # <-- แก้ IP ตรงนี้
+TARGET_PORT = 8080
 
-TARGET_IP = "192.168.1.xxx"  # Your Device IP running DroidRun
-TARGET_PORT = 8080           # Default Port
-AUTH_TOKEN = "your-token-here" # Get this from DroidRun App
+# ดู API Key ได้จากเมนู Settings > API Key ในแอป
+AUTH_TOKEN = "your-api-token-here" # <-- แก้ Token ตรงนี้
+# ---------------------------------

@@ -29,17 +29,23 @@ class DroidRunBot:
 
     def get_state_json(self):
         try:
-            resp = requests.get(f"{self.base_url}/state_full", headers=self.headers, timeout=10)
+            # Use FAST endpoint by default
+            resp = requests.get(f"{self.base_url}/a11y_tree", headers=self.headers, timeout=5)
             if resp.status_code == 200: 
                 data = resp.json()
-                if "result" in data: return data["result"]
-                return data
+                root = data.get("result") or data
+                # Handle stringified JSON from new APK
+                if isinstance(root, str):
+                    try: return json.loads(root)
+                    except: pass
+                return root
         except: pass
         return None
 
     def find_node(self, criteria):
-        state = self.get_state_json()
-        if not state: return None
+        # Result from a11y_tree is already the root node (dict) or list
+        root = self.get_state_json()
+        if not root: return None
         
         # Flatten tree
         nodes = []
@@ -49,7 +55,10 @@ class DroidRunBot:
             elif isinstance(n, dict):
                 nodes.append(n)
                 traverse(n.get("children") or n.get("subnodes"))
-        traverse(state.get("a11y_tree"))
+        
+        # Determine if root is list or dict
+        if isinstance(root, list): traverse(root)
+        else: traverse(root)
 
         # Search Logic
         best_node = None
@@ -90,11 +99,11 @@ class DroidRunBot:
         return None, None
 
     def run(self):
-        print("🎬 Action Started...")
+        print("🎬 เริ่มทำงาน (Action Started)...")
 '''
 
 TEMPLATE_FOOTER = '''
-        print("✅ Script Finished Successfully!")
+        print("✅ จบการทำงาน (Script Finished)!")
 
 if __name__ == "__main__":
     bot = DroidRunBot()
@@ -104,11 +113,11 @@ if __name__ == "__main__":
 def compile_log():
     log_file = "action_wifi_log.txt"
     if not os.path.exists(log_file):
-        print(f"❌ Error: Log file '{log_file}' not found.")
+        print(f"❌ ไม่พบไฟล์ Log: '{log_file}'")
         return
 
-    print("🔨 --- DroidRun Compiler ---")
-    output_name = input("📄 Enter output filename (e.g. my_bot.py): ").strip()
+    print("🔨 --- DroidRun Compiler (TH) ---")
+    output_name = input("📄 ตั้งชื่อไฟล์ผลลัพธ์ (เช่น my_bot.py): ").strip()
     if not output_name.endswith(".py"): output_name += ".py"
 
     with open(log_file, "r", encoding="utf-8") as f:
@@ -136,26 +145,32 @@ def compile_log():
                 
             elif action == "sleep":
                 dur = data.get("duration", 1.0)
-                code_body += f'        print(f"😴 Sleep {dur}s")\n'
+                code_body += f'        print(f"😴 รอ {dur} วินาที")\n'
                 code_body += f'        time.sleep({dur})\n'
 
             elif action == "clear":
                 code_body += '        self._post("/keyboard/clear", {})\n'
-                code_body += '        print("🧹 Cleared Text")\n'
+                code_body += '        print("🧹 ลบข้อความ")\n'
                 code_body += '        time.sleep(0.5)\n'
 
             elif action == "key":
                 k = data.get("key_code")
                 code_body += f'        self._post("/keyboard/key", {{"key_code": {k}}})\n'
-                code_body += f'        print("🎹 Key {k} Sent")\n'
+                code_body += f'        print("🎹 กดปุ่ม Code: {k}")\n'
                 code_body += '        time.sleep(0.5)\n'
+
+            elif action == "long_press":
+                  x, y = data.get("x"), data.get("y")
+                  dur = data.get("duration", 1000)
+                  code_body += f'        self._post("/action/swipe", {{"startX": {x}, "startY": {y}, "endX": {x}, "endY": {y}, "duration": {dur}}})\n'
+                  code_body += f'        print("👆 กดค้างที่ ({x},{y}) นาน {dur}ms")\n'
+                  code_body += '        time.sleep(1.0)\n'
 
             elif action == "input":
                 txt = data.get("text", "")
-                # Encode text properly in generated code
                 code_body += f'        encoded = base64.b64encode("{txt}".encode()).decode()\n'
                 code_body += '        self._post("/keyboard/input", {"base64_text": encoded})\n'
-                code_body += f'        print("✍️ Input: {txt}")\n'
+                code_body += f'        print("✍️ พิมพ์: {txt}")\n'
                 code_body += '        time.sleep(1.0)\n'
 
             elif action == "tap":
@@ -165,10 +180,10 @@ def compile_log():
                 code_body += '        if node:\n'
                 code_body += '            cx, cy = self.get_center(node)\n'
                 code_body += '            if cx:\n'
-                code_body += f'                print(f"🎯 Tap: {{criteria.get(\'text\') or \'Element\'}} at ({{cx}},{{cy}})")\n'
+                code_body += f'                print(f"🎯 กดที่: {{criteria.get(\'text\') or \'Element\'}} พิกัด ({{cx}},{{cy}})")\n'
                 code_body += '                self._post("/action/tap", {"x": int(cx), "y": int(cy)})\n'
-                code_body += '            else: print("⚠️ Invalid Bounds")\n'
-                code_body += '        else: print(f"⚠️ Element not found: {criteria.get(\'text\')}")\n'
+                code_body += '            else: print("⚠️ หาพิกัดไม่เจอ (Invalid Bounds)")\n'
+                code_body += '        else: print(f"⚠️ หาปุ่มไม่เจอ: {criteria.get(\'text\')}")\n'
                 code_body += '        time.sleep(1.5)\n'
 
         except Exception as e:
@@ -179,8 +194,8 @@ def compile_log():
     with open(output_name, "w", encoding="utf-8") as f:
         f.write(full_script)
         
-    print(f"\n✨ Compiled! Saved to: {output_name}")
-    print(f"👉 Run it with: python {output_name}")
+    print(f"\n✨ สร้างไฟล์สำเร็จ! บันทึกที่: {output_name}")
+    print(f"👉 สั่งรันได้เลย: python {output_name}")
 
 if __name__ == "__main__":
     compile_log()
