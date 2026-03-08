@@ -12,7 +12,7 @@ mcp = FastMCP("DroidRun Control")
 # Connection Details from wifi_config.py
 BASE_URL = f"http://{wifi_config.TARGET_IP}:{wifi_config.TARGET_PORT}"
 HEADERS = {
-    "Authorization": f"Bearer {wifi_config.AUTH_TOKEN}",
+    "Authorization": f"Bearer {wifi_config.API_KEY}",
     "Content-Type": "application/json"
 }
 
@@ -157,6 +157,16 @@ def get_screenshot() -> str:
         return resp.text # Likely already base64 string from API
     except Exception as e:
         return f"Error getting screenshot: {e}"
+
+@mcp.tool()
+def stop_app(package_name: str) -> str:
+    """Force stop an application by package name."""
+    url = f"{BASE_URL}/action/stop_app"
+    try:
+        resp = requests.post(url, json={"packageName": package_name}, headers=HEADERS, timeout=10)
+        return json.dumps(resp.json(), indent=2, ensure_ascii=False)
+    except Exception as e:
+        return f"Error stopping app: {e}"
 
 def _send_global_action(action_id: int, name: str) -> str:
     url = f"{BASE_URL}/action/global"

@@ -35,7 +35,7 @@ pip install requests
     ```python
     TARGET_IP = "192.168.1.xxx"  # IP ของมือถือ
     TARGET_PORT = 8080           # Port ของ DroidRun
-    AUTH_TOKEN = "xxxxx"         # Token จากแอป DroidRun
+    API_KEY = "dr_sk_xxxxx"      # API Key จากแอป DroidRun (ตัวอย่าง: dr_sk_... ยาว 70 ตัวอักษร)
     ```
 
 ### 3. การใช้งาน Recorder (`wifi_recorder.py`)
@@ -67,6 +67,7 @@ python wifi_compiler.py
     *   `get_device_info()`: ดูสถานะเครื่อง (App ที่เปิดอยู่)
     *   `list_apps()`: ดูรายชื่อ App ทั้งหมดในเครื่อง
     *   `get_screenshot()`: ดึงรูปหน้าจอ (Vision) ไปให้ AI วิเคราะห์
+    *   `stop_app(package_name)`: บังคับหยุดการทำงานของแอป (Force Stop)
     *   `fast mode`: ใช้ `/a11y_tree` ทำงานไวกว่าเดิม 3 เท่า
 
 **ขั้นตอนการติดตั้ง (Installation Sequence):**

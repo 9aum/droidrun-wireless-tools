@@ -13,11 +13,11 @@ class DroidRunBot:
     def __init__(self):
         self.ip = wifi_config.TARGET_IP
         self.port = wifi_config.TARGET_PORT
-        self.token = wifi_config.AUTH_TOKEN
+        self.api_key = wifi_config.API_KEY
         self.base_url = f"http://{self.ip}:{self.port}"
         self.headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.api_key}",
         }
         print(f"🤖 Bot Started on {self.base_url}")
 
