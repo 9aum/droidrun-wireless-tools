@@ -170,8 +170,13 @@ def compile_log():
                   sx, sy = data.get("startX"), data.get("startY")
                   ex, ey = data.get("endX"), data.get("endY")
                   dur = data.get("duration", 500)
+                  direction = data.get("direction")
                   code_body += f'        self._post("/action/swipe", {{"startX": {sx}, "startY": {sy}, "endX": {ex}, "endY": {ey}, "duration": {dur}}})\n'
-                  code_body += f'        print("👉 ปัดหน้าจอจาก ({sx},{sy}) ไป ({ex},{ey}) นาน {dur}ms")\n'
+                  if direction:
+                      dir_th = {"left": "ซ้าย", "right": "ขวา", "up": "ขึ้น", "down": "ลง"}.get(direction, direction)
+                      code_body += f'        print("👉 ปัดหน้าจอไปทาง{dir_th} ({sx},{sy} -> {ex},{ey}) นาน {dur}ms")\n'
+                  else:
+                      code_body += f'        print("👉 ปัดหน้าจอจาก ({sx},{sy}) ไป ({ex},{ey}) นาน {dur}ms")\n'
                   code_body += '        time.sleep(1.0)\n'
 
             elif action == "input":

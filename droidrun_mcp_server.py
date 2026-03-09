@@ -113,6 +113,22 @@ def swipe(sx: int, sy: int, ex: int, ey: int, duration_ms: int = 500) -> str:
         return f"Error swiping: {e}"
 
 @mcp.tool()
+def swipe_dir(direction: str, duration_ms: int = 500) -> str:
+    """Swipe screen by simple direction: left, right, up, down."""
+    # Assume standard 1080x2400 for relative swipes if resolution is unknown
+    cx, cy = 540, 1200
+    dx, dy = 300, 600
+    
+    direction = direction.lower().strip()
+    if direction == "left":   sx, sy, ex, ey = cx + dx, cy, cx - dx, cy
+    elif direction == "right":  sx, sy, ex, ey = cx - dx, cy, cx + dx, cy
+    elif direction == "up":     sx, sy, ex, ey = cx, cy + dy, cx, cy - dy
+    elif direction == "down":   sx, sy, ex, ey = cx, cy - dy, cx, cy + dy
+    else: return f"Error: Unknown direction '{direction}'"
+    
+    return swipe(sx, sy, ex, ey, duration_ms)
+
+@mcp.tool()
 def clear_text() -> str:
     """Clear text in the focused input field."""
     url = f"{BASE_URL}/keyboard/clear"
