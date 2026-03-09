@@ -272,7 +272,7 @@ def main():
     recorder = DroidRunWirelessRecorder()
     
     while True:
-        print("\n[idx <N>] [long <N>] [txt <MSG>] [clear] [key <N|Name>]")
+        print("\n[idx <N>] [long <N>] [swipe <sx sy ex ey>] [txt <MSG>] [clear] [key <N|Name>]")
         print("[dump/fast] [sleep <N>] [home] [back] [exit] -> (Type 'help' for details)")
         print("Shortcuts: enter, backspace, tab, up, down, left, right")
         cmd = input("REC > ").strip().lower()
