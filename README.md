@@ -62,7 +62,8 @@ python wifi_compiler.py
 *   `type_text(text)`: พิมพ์ข้อความ
 *   `press_key(code/name)`: กดปุ่ม (enter, back, home ฯลฯ)
 *   `long_press(x, y, duration)`: กดค้าง
-*   `swipe(sx, sy, ex, ey)`: สไลด์หน้าจอ
+*   `swipe(sx, sy, ex, ey)`: สไลด์หน้าจอตามพิกัด
+*   `swipe_dir(direction)`: สไลด์หน้าจอตามทิศทาง (left, right, up, down)
 *   **New in V2.0:**
     *   `get_device_info()`: ดูสถานะเครื่อง (App ที่เปิดอยู่)
     *   `list_apps()`: ดูรายชื่อ App ทั้งหมดในเครื่อง
@@ -102,6 +103,8 @@ python wifi_compiler.py
 *   `fast`       : ดึงโครงสร้างหน้าจอแบบเร็ว (แนะนำ)
 *   `idx <N>`    : จิ้ม (Tap) ที่ Index นั้น เช่น `idx 5`
 *   `long <N> [ms]`: กดค้างที่ Index นั้น (ค่าเดิม 1000ms) เช่น `long 5 2000`
+*   `swipe`      : ปัดหน้าจอพิกัด `(sx, sy)` ไป `(ex, ey)` เช่น `swipe 500 1500 500 500 500`
+               : หรือปัดแบบง่ายตามทิศทาง เช่น `swipe left`, `swipe right`, `swipe up`, `swipe down`
 *   `txt <msg>`  : พิมพ์ข้อความ (รองรับไทย) เช่น `txt สวัสดี`
 *   `clear`      : สั่งลบข้อความในช่องพิมพ์ (Clear Text)
 *   `home`       : กดปุ่มโฮม
