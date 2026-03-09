@@ -166,6 +166,14 @@ def compile_log():
                   code_body += f'        print("👆 กดค้างที่ ({x},{y}) นาน {dur}ms")\n'
                   code_body += '        time.sleep(1.0)\n'
 
+            elif action == "swipe":
+                  sx, sy = data.get("startX"), data.get("startY")
+                  ex, ey = data.get("endX"), data.get("endY")
+                  dur = data.get("duration", 500)
+                  code_body += f'        self._post("/action/swipe", {{"startX": {sx}, "startY": {sy}, "endX": {ex}, "endY": {ey}, "duration": {dur}}})\n'
+                  code_body += f'        print("👉 ปัดหน้าจอจาก ({sx},{sy}) ไป ({ex},{ey}) นาน {dur}ms")\n'
+                  code_body += '        time.sleep(1.0)\n'
+
             elif action == "input":
                 txt = data.get("text", "")
                 code_body += f'        encoded = base64.b64encode("{txt}".encode()).decode()\n'

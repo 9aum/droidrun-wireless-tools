@@ -257,7 +257,14 @@ class DroidRunWirelessRecorder:
             print(f"❌ Index {idx} out of range.")
 
     def swipe(self, sx, sy, ex, ey, duration=500):
-         self._post("/action/swipe", {"startX": int(sx), "startY": int(sy), "endX": int(ex), "endY": int(ey), "duration": duration})
+        self._post("/action/swipe", {"startX": int(sx), "startY": int(sy), "endX": int(ex), "endY": int(ey), "duration": duration})
+        self.log_action({
+            "action": "swipe",
+            "startX": int(sx), "startY": int(sy),
+            "endX": int(ex), "endY": int(ey),
+            "duration": duration
+        })
+        print(f"👉 Swiping from ({sx}, {sy}) to ({ex}, {ey}) for {duration}ms")
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -279,6 +286,7 @@ def main():
             print("  fast       : ดึงโครงสร้างหน้าจอแบบเร็ว (แนะนำ)")
             print("  idx <N>    : จิ้ม (Tap) ที่ Index นั้น เช่น 'idx 5'")
             print("  long <N>   : กดค้างที่ Index นั้น (ค่าเดิม 1วิ) เช่น 'long 5 2000'")
+            print("  swipe      : ปัดหน้าจอพิกัด (sx, sy) ไป (ex, ey) เช่น 'swipe 500 1500 500 500 500'")
             print("  txt <msg>  : พิมพ์ข้อความ (รองรับไทย) เช่น 'txt สวัสดี'")
             print("  clear      : สั่งลบข้อความในช่องพิมพ์ (Clear Text)")
             print("  home       : กดปุ่มโฮม")
@@ -313,6 +321,14 @@ def main():
             if len(p) > 1: 
                 dur = int(p[2]) if len(p) > 2 else 1000
                 recorder.long_press_index(p[1], dur)
+        elif cmd.startswith('swipe'):
+            # Usage: swipe <sx> <sy> <ex> <ey> [duration]
+            p = cmd.split()
+            if len(p) >= 5:
+                dur = int(p[5]) if len(p) > 5 else 500
+                recorder.swipe(p[1], p[2], p[3], p[4], dur)
+            else:
+                print("❌ Invalid swipe command. Usage: swipe <sx> <sy> <ex> <ey> [duration]")
         elif cmd.startswith('txt'): recorder.input_text(cmd[4:])
         elif cmd.startswith('sleep'): recorder.sleep(cmd[6:])
         elif cmd == 'home': recorder.home()
