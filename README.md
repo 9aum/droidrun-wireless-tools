@@ -92,6 +92,12 @@ python wifi_compiler.py
     ```
     *(ข้อควรระวัง: โปรดตรวจสอบ path ของไฟล์ให้ถูกต้องตามตำแหน่งจริงในเครื่องของท่าน)*
 
+### 6. การใช้งานร่วมกับ OpenClaw (บน Termux)
+ชุดคำสั่งเพิ่มเติมสำหรับการนำไปรันบนอุปกรณ์ Android โดยตรงผ่านสภาพแวดล้อมเช่น Termux ประกอบด้วย:
+*   **`openclaw_mcp.py`**: เป็นโมดูลหลัก (`MCPForMe`) ที่คอยคุยกับ DroidRun Portal ผ่านเครือข่าย สามารถรันผ่าน Command Line เพื่อสั่งบรรทัดคำสั่งต่างๆ เช่น tap, type, swipe, ฯลฯ ได้โดยตรง
+*   **`openclaw_line_send_message.py`**: สคริปต์ส่งข้อความ LINE อัตโนมัติ (ตัวอย่างการนำ `openclaw_mcp.py` ไปประยุกต์ใช้) โดยตัวสคริปต์จะครอบคลุมตั้งแต่การเปิดแอป LINE, ค้นหาแชท, พิมพ์ และกดส่ง
+    *   **วิธีใช้งาน:** `python3 openclaw_line_send_message.py '<ชื่อเพื่อน/กลุ่ม>' '<ข้อความที่ต้องการส่ง>'`
+
 **🎥 ตัวอย่างการทำงาน (Demo):**
 
 [![Watch the demo](https://img.youtube.com/vi/Kv_v4gm3zl4/0.jpg)](https://youtu.be/Kv_v4gm3zl4)
